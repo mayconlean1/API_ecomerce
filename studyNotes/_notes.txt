@@ -1,0 +1,25 @@
+dependencia somente em ambiente de desenvolvimento
+npm install nodemon --save-dev
+
+chamada
+http://localhost:3000/produtos/?name=ola
+
+pegar no backend com 
+req.query > {'name' : 'ola'}
+
+router.get('/:id?',(req , res , next)=>{} // ? parametro opcional
+req.params
+
+morgan executa logs no servidor com os pedidos do client
+
+cors utilizado somente no servidor 
+configura o acesso api apenas de um servidor especifico
+
+//excluir tabela
+//DROP TABLE nome_da_tabela 
+
+//alterar tabela 12:00 min banco de dados
+// https://www.youtube.com/watch?v=NYjF4N8FtSs
+
+// por algum motivo quando roda o comando npm run init-db ele cria fora da pasta Database e 
+//precisa arrastar o banco de dados para dentro dela para funcionar

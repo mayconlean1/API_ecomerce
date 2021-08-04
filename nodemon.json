@@ -1,0 +1,9 @@
+{
+    "env":{
+        "ID" : "1",
+        "DATABASE_NAME" : "ecommerce",
+        "JWT_SECRET": "SECRET",
+        
+        "BASE_URL": "http://localhost:3000"
+    }
+}
