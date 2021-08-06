@@ -25,4 +25,7 @@ configura o acesso api apenas de um servidor especifico
 //precisa arrastar o banco de dados para dentro dela para funcionar
 
 ###################### BUGS ENCONTRADOS ##############
+
 //atualizaçao do estoque no controller_pedidos esta com problema linhas 209 a 223, está cadastrando o pedido do produto q existe e entra no catch
+
+não atualiza o estoque do produto quando faz o pedido

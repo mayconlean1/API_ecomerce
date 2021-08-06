@@ -1,6 +1,11 @@
 const db = require ('../model/dbDo')
 const {typeJSON , dbParse, isObject } = require('../utils/utils')
-const {returnProdutcsToStock , convertValueOfDate} = require('../utils/controllersUtils')
+const {
+    returnProdutcsToStock, 
+    convertValueOfDate,
+    checkNoStockProducts
+} = require('../utils/controllersUtils')
+
 
 module.exports = {
     async getAll  (req , res , next){
@@ -157,6 +162,18 @@ module.exports = {
         const quantityProducts = Object.values( products )
     
         const tableProducts = await db.get( {table: 'produtos', whereOR:{id : idProdutcs}})
+
+        if(idProdutcs.length !== tableProducts.length){
+
+            const idTableProducts = tableProducts.reduce((arr, prod)=>{
+                arr.push(Number( prod.id ))
+                return arr
+            },[])
+            
+            const notExistsProdutcs = idProdutcs.filter(idProd => !idTableProducts.includes(Number( idProd)))
+
+            return res.status(500).send({erro:'Não existe produtos',id:notExistsProdutcs,detalhes})
+        }
     
         const noStock = tableProducts.filter((product, index) => quantityProducts[index] > product.estoque)
     
@@ -208,9 +225,8 @@ module.exports = {
         // atualizar estoque no banco de dados Produtos
         const avaibleStock = tableProducts.map(p => p.estoque)
         for(let c = 0 ; c < idProdutcs.length ; c++){
-            let info
             try {
-                info = await db.update ( 
+                await db.update ( 
                     {
                     table:'produtos', 
                     update:{estoque :avaibleStock[c] - quantityProducts[c]} , 
@@ -218,12 +234,11 @@ module.exports = {
                     } 
                 )
             } catch (error) {
-                console.log(info)
-                return res.status(500).send({erro : 'sem estoque',detalhes})
+                
+                return res.status(500).send({erro : error,detalhes})
             }
-          
         }
-    
+
         return res.status(201).send({
             mensagem: 'O pedido foi criado',
             chave: idKey,

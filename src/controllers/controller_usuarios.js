@@ -27,6 +27,7 @@ module.exports = {
             const body = {}
             body.senha_hash = hash
             body.email = req.body.email
+            // body.tipo = req.body.tipo
             if(getUsuario.tipo === 'admin' && req.body.tipo === 'admin'){
                 body.tipo = req.body.tipo
             }

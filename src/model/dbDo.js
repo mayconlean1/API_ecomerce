@@ -1,5 +1,7 @@
-const change = true
+const change = false
 const throwError = false
+
+const DBNAME = process.env.MYSQL_DATABASE || 'db'
 
 const Database = require ('../Database/config')
 const { 
@@ -25,18 +27,18 @@ const dbDo = {
         let getData
         if(where){
 
-            const [select] = await conn.query(`SELECT * FROM ${table} ${mountWhere(where) }`)
+            const [select] = await conn.query(`SELECT * FROM ${DBNAME}.${table} ${mountWhere(where) }`)
             .catch(err=>{ throw Error (err) })
             getData = select
 
         }else if(whereOR){
 
-            const [select] = await conn.query(`SELECT * FROM ${table} ${mountWhereOR(whereOR) }`).catch(err=>{ throw Error (err) })
+            const [select] = await conn.query(`SELECT * FROM ${DBNAME}.${table} ${mountWhereOR(whereOR) }`).catch(err=>{ throw Error (err) })
             getData = select
 
         }else {
 
-            const [select] = await conn.query(`SELECT * FROM ${table}`)
+            const [select] = await conn.query(`SELECT * FROM ${DBNAME}.${table}`)
             .catch(err=>{ throw Error (err) })
             getData = select
 
@@ -62,7 +64,7 @@ const dbDo = {
         if(change){
             
             info = await conn.query(`
-                INSERT INTO ${table}(
+                INSERT INTO ${DBNAME}.${table}(
                     ${keys}
                 )VALUES(
                     ${SQLFormat(values)}
@@ -71,20 +73,22 @@ const dbDo = {
 
         }else{
             
-        console.log(`
-            INSERT INTO ${table}(
-                ${keys}
-            )VALUES(
-                ${SQLFormat(values)}
-            );
-            
-        `)
-            
-        console.log('change false : Database Insert')
+            console.log(`
+                INSERT INTO ${DBNAME}.${table}(
+                    ${keys}
+                )VALUES(
+                    ${SQLFormat(values)}
+                );
+                
+            `)
+                
+            console.log('change false : Database Insert')
         }
-        await pool.end()
 
-        return info[0].insertId
+        await pool.end()
+        // console.log(info)
+        
+        // return  info ? info[0].insertId : false 
     },
 
     async update(data = {table : '' , update : {}, where : {} , whereOR: {} ,whereRequired:true}){
@@ -101,18 +105,18 @@ const dbDo = {
             if (whereOR){
                 // console.log(`UPDATE ${table} SET ${mountStringEqualComma(update)} ${whereRequired ? ` WHERE ${mountStringEqualOr(whereOR)}  ` : ''}`)
     
-                await conn.query(`UPDATE ${table} SET ${mountStringEqualComma(update)} ${whereRequired ? ` WHERE ${mountStringEqualOr(whereOR)}  ` : ''}`)
+                await conn.query(`UPDATE ${DBNAME}.${table} SET ${mountStringEqualComma(update)} ${whereRequired ? ` WHERE ${mountStringEqualOr(whereOR)}  ` : ''}`)
             }else{
                 // console.log(`UPDATE ${table} SET ${mountStringEqualComma(update)}${whereRequired ? ` WHERE ${mountStringEqualAnd(where)} ` : ''}`
                 // )
     
-                await conn.query(`UPDATE ${table} SET ${mountStringEqualComma(update)}${whereRequired ? ` WHERE ${mountStringEqualAnd(where)} ` : ''}`)
+                await conn.query(`UPDATE ${DBNAME}.${table} SET ${mountStringEqualComma(update)}${whereRequired ? ` WHERE ${mountStringEqualAnd(where)} ` : ''}`)
             }
         }else{
             whereOR ? 
-            console.log(`UPDATE ${table} SET ${mountStringEqualComma(update)} ${whereRequired ? ` WHERE ${mountStringEqualOr(whereOR)}  ` : ''}`) 
+            console.log(`UPDATE ${DBNAME}.${table} SET ${mountStringEqualComma(update)} ${whereRequired ? ` WHERE ${mountStringEqualOr(whereOR)}  ` : ''}`) 
             :
-            console.log(`UPDATE ${table} SET ${mountStringEqualComma(update)}${whereRequired ? ` WHERE ${mountStringEqualAnd(where)} ` : ''}`)
+            console.log(`UPDATE ${DBNAME}.${table} SET ${mountStringEqualComma(update)}${whereRequired ? ` WHERE ${mountStringEqualAnd(where)} ` : ''}`)
             console.log('change desligado: Database update')
         }
 
@@ -130,7 +134,7 @@ const dbDo = {
         if(change){
             if(whereOR){
                 await conn.query(`
-                    DELETE FROM ${table} 
+                    DELETE FROM ${DBNAME}.${table} 
                     ${whereRequired ? `
                         WHERE
                         ${mountStringEqualOr(whereOR)}
@@ -139,7 +143,7 @@ const dbDo = {
             }else{
                 
                 await conn.query(`
-                    DELETE FROM ${table} 
+                    DELETE FROM ${DBNAME}.${table} 
                     ${whereRequired ? `
                         WHERE
                         ${mountStringEqualAnd(where)}
@@ -150,10 +154,10 @@ const dbDo = {
         }else{
             whereOR?
             console.log(
-                `DELETE FROM ${table} ${whereRequired ? ` WHERE ${mountStringEqualOr(whereOR)}` : ''}` ) 
+                `DELETE FROM ${DBNAME}.${table} ${whereRequired ? ` WHERE ${mountStringEqualOr(whereOR)}` : ''}` ) 
                 :
             console.log(
-                `DELETE FROM ${table} ${whereRequired ? ` WHERE ${mountStringEqualAnd(where)}` : ''}`
+                `DELETE FROM ${DBNAME}.${table} ${whereRequired ? ` WHERE ${mountStringEqualAnd(where)}` : ''}`
             )
         }
 

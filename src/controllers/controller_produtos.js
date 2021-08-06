@@ -199,7 +199,6 @@ const controllerProdutos = {
         getUsuario = getUsuario[0]
 
         if(getUsuario.tipo === 'admin'){
-            
             const id = req.params.id || req.body.id
             const deleteImages = req.body.imagens
 
@@ -329,9 +328,8 @@ const controllerProdutos = {
             return res.status(500).send({erro: error , detalhes})
         }
         getUsuario = getUsuario[0]
-
         if(getUsuario.tipo === 'admin'){
-                
+            
             const id = req.body.id
             if(id){
                 let getProduct
@@ -356,17 +354,18 @@ const controllerProdutos = {
                     })
                 }
                 const productImgs= getProduct[0].imagens
-
-                // return await controllerProdutos.deleteImages(req , res , next)
-                try { 
-                    productImgs.forEach(img =>{
-                        // console.log(path.join(basePath, './imagens/' + img))
-                        const imgPath = path.join(basePath, './imagens/' + img)
-                        fs.unlinkSync( imgPath)
-                    })
-                } catch (error) {
-                    return res.status(500).send({erro: error,APIimage:'error',detalhes})
+                if(productImgs){
+                    try { 
+                        productImgs.forEach(img =>{
+                            // console.log(path.join(basePath, './imagens/' + img))
+                            const imgPath = path.join(basePath, './imagens/' + img)
+                            fs.unlinkSync( imgPath)
+                        })
+                    } catch (error) {
+                        return res.status(500).send({erro: error,APIimage:'error',detalhes})
+                    }
                 }
+                // return await controllerProdutos.deleteImages(req , res , next)
 
                 return res.status(200).send({
                     mensagem: 'Produto deletado',
