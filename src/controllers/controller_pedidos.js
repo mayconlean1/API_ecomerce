@@ -208,13 +208,20 @@ module.exports = {
         // atualizar estoque no banco de dados Produtos
         const avaibleStock = tableProducts.map(p => p.estoque)
         for(let c = 0 ; c < idProdutcs.length ; c++){
-            await db.update ( 
-                {
-                table:'produtos', 
-                update:{estoque :avaibleStock[c] - quantityProducts[c]} , 
-                where: { id: idProdutcs[c]}
-                } 
-            )
+            let info
+            try {
+                info = await db.update ( 
+                    {
+                    table:'produtos', 
+                    update:{estoque :avaibleStock[c] - quantityProducts[c]} , 
+                    where: { id: idProdutcs[c]}
+                    } 
+                )
+            } catch (error) {
+                console.log(info)
+                return res.status(500).send({erro : 'sem estoque',detalhes})
+            }
+          
         }
     
         return res.status(201).send({
