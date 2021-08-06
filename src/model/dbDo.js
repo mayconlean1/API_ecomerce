@@ -1,4 +1,4 @@
-const change = false
+const change = true
 const throwError = false
 
 const DBNAME = process.env.MYSQL_DATABASE || 'db'

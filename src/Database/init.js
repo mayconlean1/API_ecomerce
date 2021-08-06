@@ -9,11 +9,11 @@ const initDb = {
 
         await conn.query("CREATE TABLE IF NOT EXISTS `db`.`produtos`(id INT NOT NULL AUTO_INCREMENT,nome TEXT NOT NULL,preco INT NOT NULL,estoque INT NOT NULL,descricao TEXT DEFAULT NULL,imagens TEXT DEFAULT NULL,PRIMARY KEY (`id`));")
   
-        await conn.query("CREATE TABLE `db`.`pedidos` (`id` INT NOT NULL AUTO_INCREMENT,`status` VARCHAR(45) NULL DEFAULT 'aberto',`cliente` TEXT NOT NULL,`contato` TEXT NOT NULL,`entrega` TEXT NOT NULL,`produtos` TEXT NOT NULL,`pagamento` TEXT NOT NULL,`valorTotal` TEXT NOT NULL,`data_criacao` TIMESTAMP NULL DEFAULT CURRENT_TIMESTAMP,`data_fechamento` TIMESTAMP NULL DEFAULT NULL,PRIMARY KEY (`id`));")
+        await conn.query("CREATE TABLE IF NOT EXISTS `db`.`pedidos` (`id` INT NOT NULL AUTO_INCREMENT,`status` VARCHAR(45) NULL DEFAULT 'aberto',`cliente` TEXT NOT NULL,`contato` TEXT NOT NULL,`entrega` TEXT NOT NULL,`produtos` TEXT NOT NULL,`pagamento` TEXT NOT NULL,`valorTotal` TEXT NOT NULL,`data_criacao` TIMESTAMP NOT NULL,`data_fechamento` TIMESTAMP NULL DEFAULT NULL,PRIMARY KEY (`id`));")
 
-        await conn.query("CREATE TABLE `db`.`usuarios` (`id` INT NOT NULL AUTO_INCREMENT,`email` VARCHAR(220) NOT NULL,`senha_hash` VARCHAR(220) NOT NULL,`tipo` VARCHAR(45) NOT NULL DEFAULT 'usuario',PRIMARY KEY (`id`),UNIQUE INDEX `email_UNIQUE` (`email` ASC) );")
+        await conn.query("CREATE TABLE IF NOT EXISTS `db`.`usuarios` (`id` INT NOT NULL AUTO_INCREMENT,`email` VARCHAR(220) NOT NULL,`senha_hash` VARCHAR(220) NOT NULL,`tipo` VARCHAR(45) NOT NULL DEFAULT 'usuario',PRIMARY KEY (`id`),UNIQUE INDEX `email_UNIQUE` (`email` ASC) );")
                     
-        await conn.release()
+        await pool.end()
     }
 }
 

@@ -1,5 +1,5 @@
 const db = require ('../model/dbDo')
-const {typeJSON , dbParse, isObject } = require('../utils/utils')
+const {typeJSON , dbParse, isObject, UTCDateDatabase } = require('../utils/utils')
 const {
     returnProdutcsToStock, 
     convertValueOfDate,
@@ -211,7 +211,8 @@ module.exports = {
             entrega : body.entrega,
             produtos : dbProducts,
             pagamento : body.pagamento,
-            valorTotal : total
+            valorTotal : total,
+            data_criacao : UTCDateDatabase()
         }
     
         let idKey
@@ -346,7 +347,7 @@ module.exports = {
             const checkedIds = checkedDateStatusData.map(pedido => pedido.id)   
         
             try {
-                await db.update( {table: 'pedidos',update:{status:'entregue', data_fechamento:Date.now()} , whereOR : {id : checkedIds}} )
+                await db.update( {table: 'pedidos',update:{status:'entregue', data_fechamento:UTCDateDatabase()} , whereOR : {id : checkedIds}} )
             } catch (error) {
                 return res.status(500).send({erro: error , detalhes})
             }
@@ -414,7 +415,7 @@ module.exports = {
         }
     
         try {
-            await db.update( {table: 'pedidos',update:{status:'cancelado',data_fechamento:Date.now()} , whereOR : {id : checkedIds}} )
+            await db.update( {table: 'pedidos',update:{status:'cancelado',data_fechamento:UTCDateDatabase()} , whereOR : {id : checkedIds}} )
         } catch (error) {
             return res.status(500).send({erro: error , detalhes})
         }
