@@ -3,12 +3,14 @@ const Database = require('./config')
 
 const initDb = {
     async init (){
+        const db = process.env.MYSQL_DATABASE || 'db'
+    
         const pool = await Database ()
         const conn = await pool.getConnection()
         .catch(err=>{ throw Error (err) })
 
         await conn.query(`
-            CREATE TABLE IF NOT EXISTS db.produtos(
+            CREATE TABLE IF NOT EXISTS ${db}.produtos(
                 id INT NOT NULL AUTO_INCREMENT,
                 nome TEXT NOT NULL,
                 preco INT NOT NULL,
@@ -20,7 +22,7 @@ const initDb = {
         `)
 
         await conn.query(`
-            CREATE TABLE IF NOT EXISTS db.pedidos(
+            CREATE TABLE IF NOT EXISTS ${db}.pedidos(
                 id INT NOT NULL AUTO_INCREMENT,
                 status VARCHAR(45) NULL DEFAULT 'aberto',
                 cliente TEXT NOT NULL,
@@ -34,9 +36,9 @@ const initDb = {
                     PRIMARY KEY (id)
             );
         `)
-
+                
         await conn.query(`
-            CREATE TABLE IF NOT EXISTS db.usuarios (
+            CREATE TABLE IF NOT EXISTS ${db}.usuarios (
                 id INT NOT NULL AUTO_INCREMENT,
                 email VARCHAR(220) NOT NULL,
                 senha_hash VARCHAR(220) NOT NULL,
@@ -45,7 +47,7 @@ const initDb = {
                     UNIQUE INDEX email_UNIQUE (email ASC) 
             );
         `)
-
+       
         await pool.end()
     }
 }

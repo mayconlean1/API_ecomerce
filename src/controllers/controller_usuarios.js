@@ -17,21 +17,23 @@ module.exports = {
             if(errBcrypt){return res.status(500).send({erro:errBcrypt})}
 
             let getUsuario
+            let token= false
             try {
                 getUsuario = await db.get({table: 'usuarios' , where:{id:req.token.id}})
-            } catch (error) {
-                return res.status(500).send({erro: error})
-            }
-            getUsuario = getUsuario[0]
+                getUsuario = getUsuario[0]
+                
+                if (getUsuario === undefined){throw Error()}  
+                token = true
+            } catch {}
 
             const body = {}
             body.senha_hash = hash
             body.email = req.body.email
-            // body.tipo = req.body.tipo
-            if(getUsuario.tipo === 'admin' && req.body.tipo === 'admin'){
+             
+            if(token && getUsuario.tipo === 'admin' && req.body.tipo === 'admin'){
                 body.tipo = req.body.tipo
             }
-            
+
             try {
                 await db.insert({table: 'usuarios', insert:body})
                 return res.status(201).send({mensagem:'Cadastro feito com sucesso'})
@@ -39,7 +41,6 @@ module.exports = {
             } catch (error) {
                 return res.status(500).send({erro:error})
             }
-    
         } )
     
     },
