@@ -3,7 +3,7 @@ const Database = require('./config')
 
 const initDb = {
     async init (){
-        const db = process.env.MYSQL_DATABASE || 'db'
+        const db = process.env.MYSQL_DATABASE || 'db_tests'
     
         const pool = await Database ()
         const conn = await pool.getConnection()

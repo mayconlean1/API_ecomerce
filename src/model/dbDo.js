@@ -1,7 +1,7 @@
 const change = true
 const throwError = false
 
-const DBNAME = process.env.MYSQL_DATABASE || 'db'
+const DBNAME = process.env.MYSQL_DATABASE || 'db_tests'
 
 const Database = require ('../Database/config')
 const { 
