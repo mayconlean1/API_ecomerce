@@ -4,14 +4,13 @@ const jwt = require ('jsonwebtoken')
 
 module.exports = {
     async postCadastro (req, res, next){
-        
         let getUsuarios
         try {
             getUsuarios = await db.get( {table: 'usuarios', where: {email : req.body.email}})
             if(getUsuarios.length > 0){
                 return res.status(500).send({erro:'Usuario já cadastrado'})
             }
-        } catch (error) {return res.status(500).send({erro:error})}
+        } catch (error) {return res.status(500).send({erro:error,'passou':'aqui'})}
     
         bcrypt.hash(req.body.senha, 10,async (errBcrypt, hash)=>{
             if(errBcrypt){return res.status(500).send({erro:errBcrypt})}

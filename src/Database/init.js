@@ -1,10 +1,9 @@
 // const Database = require('./configInit')
 const Database = require('./config')
+const db = process.env.MYSQL_DATABASE || 'db_tests'
 
 const initDb = {
     async init (){
-        const db = process.env.MYSQL_DATABASE || 'db_tests'
-    
         const pool = await Database ()
         const conn = await pool.getConnection()
         .catch(err=>{ throw Error (err) })
@@ -48,6 +47,16 @@ const initDb = {
             );
         `)
        
+        await pool.end()
+    },
+    async dropAllTables(){
+        const pool = await Database ()
+        const conn = await pool.getConnection()
+        .catch(err=>{ throw Error (err) })
+
+        await conn.query(`DROP TABLE ${db}.usuarios;`)
+        await conn.query(`DROP TABLE ${db}.pedidos;`)
+        await conn.query(`DROP TABLE ${db}.produtos;`)
         await pool.end()
     }
 }
