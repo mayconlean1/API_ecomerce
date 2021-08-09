@@ -1,3 +1,5 @@
+const bcrypt = require ('bcrypt')
+
 function isObject (element){
 
     let elemmentIs = false
@@ -99,6 +101,15 @@ function UTCDateDatabase (dateValue = ''){
 
 }
 
+function hashPassword (password, salt){
+    return new Promise((resolve , reject)=>{
+        bcrypt.hash(password, salt ,(err, hash)=>{
+            if(err){reject(err)}
+            resolve(hash)
+        })
+    })
+}
+
 basePath = __dirname.replace(/src.*/, '')
 
 module.exports = {
@@ -109,5 +120,6 @@ module.exports = {
     typeJSON, 
     dbStringify,
     basePath,
-    UTCDateDatabase
+    UTCDateDatabase,
+    hashPassword
 }

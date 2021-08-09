@@ -2,6 +2,10 @@
 const Database = require('./config')
 const db = process.env.MYSQL_DATABASE || 'db_tests'
 
+const adminEmail = process.env.ADMIN_EMAIL || 'test_admin@email.com'
+const adminPass = process.env.ADMIN_PASSWORD || '123456'
+const {hashPassword} = require ('../utils/utils')
+
 const initDb = {
     async init (){
         const pool = await Database ()
@@ -46,9 +50,26 @@ const initDb = {
                     UNIQUE INDEX email_UNIQUE (email ASC) 
             );
         `)
-       
+
+        const [adminUser] = await conn.query(`SELECT * FROM ${db}.usuarios WHERE id = 1`)
+        const hashedPass = await hashPassword(adminPass, 10)
+
+        if(adminUser.length === 0){
+
+            await conn.query(`INSERT INTO ${db}.usuarios(
+                email, senha_hash, tipo
+            )VALUES(
+                '${adminEmail}', '${hashedPass}' , 'admin'
+            );`)
+            
+        }else{
+            await conn.query(`UPDATE ${db}.usuarios SET email = '${adminEmail}', senha_hash = '${hashedPass}', tipo = 'admin' WHERE id = 1;`)
+        
+        }
         await pool.end()
+       
     },
+
     async dropAllTables(){
         const pool = await Database ()
         const conn = await pool.getConnection()
@@ -58,7 +79,19 @@ const initDb = {
         await conn.query(`DROP TABLE ${db}.pedidos;`)
         await conn.query(`DROP TABLE ${db}.produtos;`)
         await pool.end()
-    }
+    },
+
+    async drop(data={table:''}){
+        const {table} = data
+
+        const pool = await Database ()
+        const conn = await pool.getConnection()
+        .catch()
+
+        await conn.query(`DROP TABLE ${db}.${table};`)
+        await pool.end()
+    },
+
 }
 
 initDb.init()

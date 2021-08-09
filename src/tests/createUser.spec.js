@@ -5,9 +5,11 @@ const Database = require ('../Database/init')
 describe('Criar usuario', ()=>{
 
     beforeAll(async()=>{
-        await Database.dropAllTables()
         await Database.init()
-    },30000) // settimeout 30000
+        await Database.drop({table: 'usuarios'})
+        await Database.init()
+        
+    }) // settimeout 30000
 
     it('Deve ser possivel criar um usuario' ,async ()=>{
 
