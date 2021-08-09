@@ -101,9 +101,18 @@ function UTCDateDatabase (dateValue = ''){
 
 }
 
-function hashPassword (password, salt){
+function createHashPassword (password, salt){
     return new Promise((resolve , reject)=>{
         bcrypt.hash(password, salt ,(err, hash)=>{
+            if(err){reject(err)}
+            resolve(hash)
+        })
+    })
+}
+
+function comparePassword(password, createHashPassword){
+    return new Promise((resolve , reject)=>{
+        bcrypt.compare(password, createHashPassword ,(err, hash)=>{
             if(err){reject(err)}
             resolve(hash)
         })
@@ -121,5 +130,6 @@ module.exports = {
     dbStringify,
     basePath,
     UTCDateDatabase,
-    hashPassword
+    createHashPassword,
+    comparePassword
 }

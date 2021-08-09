@@ -6,6 +6,8 @@ const controllerProdutos = require ('../controllers/controller_produtos')
 const uploadMulter = require ('../utils/multerConfig')
 const checkProduct = require ('./middleware/checkProduct')
 
+// app.js ROTA /produtos
+
 //RETORNA TODOS OS PRODUTOS
 router.get('/', authLogin.notRequired, controllerProdutos.getAll);
 

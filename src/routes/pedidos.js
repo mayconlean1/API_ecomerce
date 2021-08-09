@@ -3,6 +3,8 @@ const router = express.Router();
 const authLogin = require ('./middleware/authlogin')
 const controllerPedidos = require ('../controllers/controller_pedidos')
 
+//app.js ROTA /pedidos 
+
 //RETORNA TODOS OS PEDIDOS
 router.get('/',authLogin.required, controllerPedidos.getAll );
 

@@ -4,7 +4,7 @@ const db = process.env.MYSQL_DATABASE || 'db_tests'
 
 const adminEmail = process.env.ADMIN_EMAIL || 'test_admin@email.com'
 const adminPass = process.env.ADMIN_PASSWORD || '123456'
-const {hashPassword} = require ('../utils/utils')
+const {createHashPassword} = require ('../utils/utils')
 
 const initDb = {
     async init (){
@@ -52,7 +52,7 @@ const initDb = {
         `)
 
         const [adminUser] = await conn.query(`SELECT * FROM ${db}.usuarios WHERE id = 1`)
-        const hashedPass = await hashPassword(adminPass, 10)
+        const hashedPass = await createHashPassword(adminPass, 10)
 
         if(adminUser.length === 0){
 

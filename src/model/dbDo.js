@@ -26,19 +26,19 @@ const dbDo = {
 
         let getData
         if(where){
-
-            const [select] = await conn.query(`SELECT * FROM ${DBNAME}.${table} ${mountWhere(where) }`)
+            
+            const [select] = await conn.query(`SELECT * FROM ${DBNAME}.${table} ${mountWhere(where) };`)
             .catch(err=>{ throw Error (err) })
             getData = select
 
         }else if(whereOR){
 
-            const [select] = await conn.query(`SELECT * FROM ${DBNAME}.${table} ${mountWhereOR(whereOR) }`).catch(err=>{ throw Error (err) })
+            const [select] = await conn.query(`SELECT * FROM ${DBNAME}.${table} ${mountWhereOR(whereOR) };`).catch(err=>{ throw Error (err) })
             getData = select
 
         }else {
 
-            const [select] = await conn.query(`SELECT * FROM ${DBNAME}.${table}`)
+            const [select] = await conn.query(`SELECT * FROM ${DBNAME}.${table};`)
             .catch(err=>{ throw Error (err) })
             getData = select
 
