@@ -1,32 +1,42 @@
-const app = require ('../app')
+const app = require ('../../../app')
 const request = require ('supertest')
-const Database = require ('../Database/init')
+const Database = require ('../../../Database/init')
+const envConfig = require ('../../_envConfig')
 
-module.exports= ()=>{
+const faker = require ('faker')
+faker.locale = 'pt_BR'
+
+const userTestData =  {
+    email : faker.internet.email(),
+    senha : faker.internet.password()
+}
+
+module.exports= (data = {singleTest:false})=>{
+
+    data = {singleTest:false, ...data}
+    const {singleTest} = data
     return describe('Logar usuario',()=>{
-        beforeAll(async()=>{
-            process.env.JWT_SECRET = 'SECRET'
-            process.env.ADMIN_EMAIL = 'test_admin@email.com'
-            process.env.ADMIN_PASSWORD = '123456'
 
-            await Database.init()
-            await Database.drop({table: 'usuarios'})
-            await Database.init()
+        beforeAll(async()=>{
+
+            if(singleTest){
+                
+                envConfig()
     
-            const data =  {
-                email : 'teste1@email.com',
-                senha : '123456'
+                await Database.init()
+                // await Database.drop({table: 'usuarios'})
+                // await Database.init()
             }
     
             await request (app)
                 .post('/usuarios/cadastro')
-                .send(data)
+                .send(userTestData)
         })
         
         it('não deve logar com email errado',async()=>{
             const data =  {
                 email : 'teste1@emailErrado.com',
-                senha : '123456'
+                senha : userTestData.senha
             }
 
             const req = await request (app)
@@ -38,7 +48,7 @@ module.exports= ()=>{
 
         it('nao deve logar com a senha errada',async()=>{
             const data =  {
-                email : 'teste1@email.com',
+                email : userTestData.email,
                 senha : 'senha errada'
             }
 
@@ -52,14 +62,9 @@ module.exports= ()=>{
 
         it('deve logar como usuario',async()=>{
 
-            const data =  {
-                email : 'teste1@email.com',
-                senha : '123456'
-            }
-
             const req = await request (app)
                 .post('/usuarios/login')
-                .send(data)
+                .send(userTestData)
 
             expect(req.status).toBe(200)
         })

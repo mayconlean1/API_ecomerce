@@ -1,5 +1,6 @@
-const createUsers = require ('./createUser')
-const loginUsers = require ('./loginUsers')
+const test = require ('./testRoutes/allTests')
 
-createUsers()
-loginUsers()
+// test.initTables()
+// test.createUsers()
+// test.loginUsers()
+test.addProduct({singleTest:true})
