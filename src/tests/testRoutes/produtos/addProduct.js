@@ -34,7 +34,7 @@ module.exports= (data = {singleTest:false})=>{
                 envConfig()
                 Database.init()
             }
-
+            
             await request (app)
                 .post('/usuarios/cadastro')
                 .send(testUser.data)

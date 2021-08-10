@@ -16,7 +16,7 @@ const initDb = {
             CREATE TABLE IF NOT EXISTS ${db}.produtos(
                 id INT NOT NULL AUTO_INCREMENT,
                 nome TEXT NOT NULL,
-                preco INT NOT NULL,
+                preco FLOAT NOT NULL,
                 estoque INT NOT NULL,
                 descricao TEXT DEFAULT NULL,
                 imagens TEXT DEFAULT NULL,
@@ -33,7 +33,7 @@ const initDb = {
                 entrega TEXT NOT NULL,
                 produtos TEXT NOT NULL,
                 pagamento TEXT NOT NULL,
-                valorTotal TEXT NOT NULL,
+                valorTotal FLOAT NOT NULL,
                 data_criacao TIMESTAMP NOT NULL,
                 data_fechamento TIMESTAMP NULL DEFAULT NULL,
                     PRIMARY KEY (id)

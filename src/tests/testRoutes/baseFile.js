@@ -6,6 +6,7 @@ const envConfig = require ('../../_envConfig')
 const faker = require ('faker')
 faker.locale = 'pt_BR'
 
+let tokenAdmin 
 module.exports= (data = {singleTest:false})=>{
 
     data = {singleTest:false, ...data}
@@ -17,7 +18,15 @@ module.exports= (data = {singleTest:false})=>{
                 envConfig()
                 Database.init()
             }
+            const reqAdminLogin = await request (app)
+                .post('/usuarios/login')
+                .send({
+                    email : process.env.ADMIN_EMAIL,
+                    senha : process.env.ADMIN_PASSWORD
+                })
+                tokenAdmin = reqAdminLogin.body.token
         })
+        // it()
     })
 
 }

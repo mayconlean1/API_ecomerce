@@ -66,7 +66,7 @@ const controllerProdutos = {
         const detalhes ={
             metodo : 'POST',
             descricao : 'Inseri um produto no banco de dados',
-            campos : `nome TEXT NOT NULL, preco INT NOT NULL, estoque INT NOT NULL, descricao TEXT`,
+            campos : `nome TEXT NOT NULL, preco FLOAT NOT NULL, estoque INT NOT NULL, descricao TEXT`,
             duplicado: Boolean,
             primaryKey: 'identificaçao unica do produto, se duplicado retorna as keys dos produtos iguais'
         }
@@ -117,7 +117,7 @@ const controllerProdutos = {
     
                 return res.status(500).send({erro: error , detalhes})
             }
-    
+
             return res.status(201)
             .send({
                 mensagem: 'Produto inserido com sucesso',

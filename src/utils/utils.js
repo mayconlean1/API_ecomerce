@@ -119,6 +119,23 @@ function comparePassword(password, createHashPassword){
     })
 }
 
+function indexRandomArray(array=[]){
+    function isArray(element){
+        let elemmentIs = false
+    
+        try {
+            element.forEach(v =>{})
+            elemmentIs = true
+        } catch  {}
+    
+        return elemmentIs
+    }
+    if(isArray(array)){
+        return Math.floor( Math.random()* array.length)
+    }
+    return false
+}
+
 basePath = __dirname.replace(/src.*/, '')
 
 module.exports = {
@@ -131,5 +148,6 @@ module.exports = {
     basePath,
     UTCDateDatabase,
     createHashPassword,
-    comparePassword
+    comparePassword,
+    indexRandomArray
 }

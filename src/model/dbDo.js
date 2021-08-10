@@ -88,7 +88,7 @@ const dbDo = {
         await pool.end()
         // console.log(info)
         
-        // return  info ? info[0].insertId : false 
+        return  info ? info[0].insertId : false 
     },
 
     async update(data = {table : '' , update : {}, where : {} , whereOR: {} ,whereRequired:true}){
