@@ -140,7 +140,7 @@ const controllerProdutos = {
         }
         // console.log( req.files , 'uploadMulter.array') 
         // console.log(req.file, 'uploadMulter.single')
-
+        //404
         let getUsuario
         try{
             getUsuario = await db.get({table: 'usuarios' , where:{id:req.token.id}})
@@ -176,7 +176,10 @@ const controllerProdutos = {
             } 
             
         }else{
-            req.files.forEach(file =>{fs.unlinkSync(file.path)})
+            try { 
+                req.files.forEach(file =>{fs.unlinkSync(file.path)})
+            } catch{}
+
             return res.status(401).send({erro:'Não autorizado'})
         }
     },

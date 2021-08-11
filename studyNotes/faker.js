@@ -6,6 +6,8 @@ console.table(
         name: faker.commerce.productName(),
         preco: faker.commerce.price(),
         estoque : Math.trunc( faker.finance.amount() ),
-        descricao : faker.commerce.productDescription()
+        descricao : faker.commerce.productDescription(),
     }    
 )
+
+console.log( faker.image.image())
