@@ -140,7 +140,6 @@ const controllerProdutos = {
         }
         // console.log( req.files , 'uploadMulter.array') 
         // console.log(req.file, 'uploadMulter.single')
-        //404
         let getUsuario
         try{
             getUsuario = await db.get({table: 'usuarios' , where:{id:req.token.id}})
@@ -192,7 +191,6 @@ const controllerProdutos = {
                 dica:'Pode enviar o id por parametros ou pelo post'
             }
         }
-
         let getUsuario
         try{
             getUsuario = await db.get({table: 'usuarios' , where:{id:req.token.id}})
@@ -209,7 +207,7 @@ const controllerProdutos = {
             if(id){
                 getProdutos = await db.get( {table: 'produtos', where : {id:id}})
                 if(getProdutos.length === 0){
-                    return res.status(500).send({erro:'Não existe produto com esse id',detalhes})
+                    return res.status(404).send({erro:'Não existe produto com esse id',detalhes})
                 }
             }else{
                 return res.status(500).send({erro:'Necessita do id do produto',detalhes})
@@ -239,7 +237,6 @@ const controllerProdutos = {
             }else{
                 return res.status(500).send({mensagem:'Não foi deletada nenhuma imagem',detalhes})
             }
-
             try { // 2 ações apaga bd e apaga arquivo no mesmo trycatch
                 await db.update({table: 'produtos' , update:{imagens: imgUpdated}, where: {id:id}}) 
                 imgDelete.forEach(img =>{

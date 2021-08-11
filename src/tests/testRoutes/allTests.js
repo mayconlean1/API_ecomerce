@@ -6,6 +6,7 @@ const getProduct = require ('./produtos/getProduct')
 const updateProduct = require ('./produtos/updateProduct')
 const deleteProduct = require ('./produtos/deleteProduct')
 const addImageProduct = require ('./produtos/addImageProduct')
+const deleteImageProduct = require ('./produtos/deleteImageProduct')
 
 module.exports = {
     initTables,
@@ -15,5 +16,6 @@ module.exports = {
     getProduct,
     updateProduct,
     deleteProduct,
-    addImageProduct
+    addImageProduct,
+    deleteImageProduct
 }
