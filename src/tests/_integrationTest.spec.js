@@ -5,4 +5,6 @@ const singleTest = true
 // test.createUsers({singleTest})
 // test.loginUsers({singleTest})
 // test.addProduct({singleTest})
-test.getProduct({singleTest})
+// test.getProduct({singleTest})
+// test.updateProduct({singleTest})
+test.deleteProduct({singleTest})
