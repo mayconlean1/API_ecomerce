@@ -149,9 +149,6 @@ module.exports = {
         }
         getUsuario = getUsuario[0]
 
-        if (getUsuario !== 'object'){
-            return res.status(500).send({mensagem: 'Efetue o login'  , detalhes})
-        }
     
         const body = req.body
         const typeProdutos = typeJSON(body.produtos)
@@ -165,7 +162,12 @@ module.exports = {
         const idProdutcs = Object.keys( products )
         const quantityProducts = Object.values( products )
     
-        const tableProducts = await db.get( {table: 'produtos', whereOR:{id : idProdutcs}})
+        let tableProducts
+        try {
+            tableProducts = await db.get( {table: 'produtos', whereOR:{id : idProdutcs}})
+        } catch (error) {
+            return res.status(500).send({mensagem:'Não existe produtos',erro:error, detalhes})
+        }
 
         if(idProdutcs.length !== tableProducts.length){
 
@@ -176,7 +178,7 @@ module.exports = {
             
             const notExistsProdutcs = idProdutcs.filter(idProd => !idTableProducts.includes(Number( idProd)))
 
-            return res.status(500).send({erro:'Não existe produtos',id:notExistsProdutcs,detalhes})
+            return res.status(500).send({mensagem:'Não existe produtos',id:notExistsProdutcs,detalhes})
         }
     
         const noStock = tableProducts.filter((product, index) => quantityProducts[index] > product.estoque)
@@ -191,7 +193,7 @@ module.exports = {
                 } 
             ) )
             return res.status(500).send({
-                erro: `Produto(s) sem estoque`,
+                mensagem: `Produto(s) sem estoque`,
                 produtos: noSotckItens,
                 detalhes
             })
@@ -199,7 +201,8 @@ module.exports = {
     
         //Calcular valor Total
         const reduceProducts = tableProducts.reduce((obj , product, index)=>{
-            obj.total =  (product.preco * quantityProducts[index]) + obj.total
+           
+            obj.total = (product.preco * quantityProducts[index]) + obj.total
             obj[product.id] = {}
             obj[product.id].nome = product.nome
             obj[product.id].valor_unitario = product.preco

@@ -2,11 +2,11 @@ const faker = require('faker')
 const request = require ('supertest')
 const app = require ('../../../app')
 
-async function createProduct(tokenAdmin=''){
+async function createProduct(tokenAdmin='' , estoque = true){
     const dataProduct = {
         nome: faker.commerce.productName(),
         preco: faker.commerce.price(),
-        estoque : Math.trunc( faker.finance.amount() ),
+        estoque :estoque ? Math.trunc( faker.finance.amount() ) : 0,
         descricao : faker.commerce.productDescription()
     }
 
@@ -46,4 +46,28 @@ function UTCDateDatabase (dateValue = ''){
 
 }
 
-module.exports = {createProduct, randomNumber, UTCDateDatabase}
+function createDataOrder (testUser={}, products=[] ){
+    const dbProducts = {}
+    for (let i=0; i < products.length; i++){
+        const product = products[i]
+        const quantOrder =randomNumber(10)  
+        dbProducts[product.id] = quantOrder === 0? 1 : quantOrder
+
+    }
+    const {total , ...dbProduct} = dbProducts
+    const dataOrder = {
+        cliente : faker.name.findName(),
+        contato : testUser.data.email,
+        entrega : faker.address.streetAddress(),
+        produtos : dbProduct,
+        pagamento : randomNumber(2) === 0 ? 'dinheiro':'cartao',
+    }
+   return dataOrder 
+}
+
+module.exports = {
+    createProduct, 
+    randomNumber, 
+    UTCDateDatabase,
+    createDataOrder
+}

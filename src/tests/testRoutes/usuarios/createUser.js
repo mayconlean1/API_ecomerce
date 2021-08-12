@@ -121,6 +121,6 @@ module.exports= (data = {singleTest:false})=>{
 
 //expect('object').toHaveProperty('id')
 //beforeAll( ()=>{ const variavel = ''} )
-//expects().rejects.toEqual()
+//expect().rejects.toEqual()
 
 //npm i supertest   simula as rotas

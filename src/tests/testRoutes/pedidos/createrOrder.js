@@ -3,7 +3,7 @@ const request = require ('supertest')
 const Database = require ('../../../Database/init')
 const envConfig = require ('../../_envConfig')
 
-const {createProduct, randomNumber, UTCDateDatabase} = require ('./utils')
+const {createProduct, randomNumber, createDataOrder} = require ('./utils')
 
 const faker = require ('faker')
 faker.locale = 'pt_BR'
@@ -22,7 +22,7 @@ module.exports= (data = {singleTest:false})=>{
     data = {singleTest:false, ...data}
     const {singleTest} = data
 
-    return describe('Criar produto',()=>{
+    return describe('Criar pedido',()=>{
         beforeAll(async()=>{
             if(singleTest){
                 envConfig()
@@ -45,45 +45,93 @@ module.exports= (data = {singleTest:false})=>{
                 })
             tokenAdmin = reqAdminLogin.body.token
 
-            const random  = randomNumber(2)
+            const random  =  randomNumber(4) 
             const quantProducts = random === 0 ? 1: random
             for(let cont=0 ; cont < quantProducts ;cont++){
                 products.push( await createProduct(tokenAdmin) )
             }
         })
         // /pedidos
-        it('Não deve criar o pedido se não estiver logado', async()=>{
-            const quantItens = randomNumber(products.length)
-            const dbProducts = {total:0}
-            for (let i=0; i < quantItens; i++){
-                const indexProducts = randomNumber(products.lenght)
-                const product = products[indexProducts]
-
-                const quantOrder =randomNumber(Math.round( product.estoque/2 ) ) 
-                dbProducts.total = (product.preco * quantOrder) + dbProducts.total
-                dbProducts[product.id] = {}
-                dbProducts[product.id].nome = product.nome
-                dbProducts[product.id].valor_unitario = product.preco
-                dbProducts[product.id].quantidade = quantOrder
-    
-            }
-            const {total , ...dbProduct} = dbProducts
-            const dataOrder = {
-                cliente : faker.name.findName,
-                contato : testUser.data.email,
-                entrega : faker.address.streetAddress,
-                produtos : dbProduct,
-                pagamento : randomNumber(1) ===0? 'dinheiro':'cartao'   ,
-                valorTotal : total,
-                data_criacao : UTCDateDatabase()
-            }
+        it('Não deve criar o pedido se não estiver um Token', async()=>{
+            
+            const dataOrder = createDataOrder(testUser, products)
 
             const req = await request (app)
                 .post('/pedidos')
                 .send(dataOrder)
+
             expect(req.status).toBe(401)
         })
-        // it()
+
+        it('Não deve criar o pedido se o campo produtos não for um objeto', async()=>{
+            
+            const dataOrder = createDataOrder(testUser, products)
+            dataOrder.produtos = 'formato inválido'
+
+            const req = await request (app)
+                .post('/pedidos')
+                .set ('auth',`Bearer ${testUser.token}`)
+                .send(dataOrder)
+
+            expect(req.status).toBe(500)
+            expect(req.body.erro).toEqual('Formato campo produto inválido')
+        })
+
+        it('Não deve criar o pedido se algum produto não existir', async()=>{
+            const dataOrder = createDataOrder(testUser, products)
+            dataOrder.produtos = {'notExists': 1}
+           
+            const req = await request (app)
+                .post('/pedidos')
+                .set ('auth',`Bearer ${testUser.token}`)
+                .send(dataOrder)
+            console.log(req.body , req.body.erro)
+
+            dataOrder.produtos = {999: 1}
+           
+            const req2 = await request (app)
+                .post('/pedidos')
+                .set ('auth',`Bearer ${testUser.token}`)
+                .send(dataOrder)
+                
+            expect(req.status).toBe(500)
+            expect(req.body.mensagem).toEqual('Não existe produtos')
+            expect(req2.status).toBe(500)
+            expect(req2.body.mensagem).toEqual('Não existe produtos')
+        })
+
+        it('Não deve criar o pedido se algum produto não ter estoque suficiente', async()=>{
+            
+            const noStockProduct = await createProduct(tokenAdmin, estoque = false)
+            products.push(noStockProduct)
+
+            const dataOrder = createDataOrder(testUser, products)
+           
+            const req = await request (app)
+                .post('/pedidos')
+                .set ('auth',`Bearer ${testUser.token}`)
+                .send(dataOrder)
+            console.log(req.body , req.body.erro)
+
+            products.pop()
+
+            expect(req.status).toBe(500)
+            expect(req.body.mensagem).toEqual('Produto(s) sem estoque')
+            
+        })
+
+        it('Deve criar o pedido com o Token válido', async()=>{   
+
+            const dataOrder = createDataOrder(testUser, products)
+           
+            const req = await request (app)
+                .post('/pedidos')
+                .set ('auth',`Bearer ${testUser.token}`)
+                .send(dataOrder)
+
+            expect(req.status).toBe(201)
+        })
+        
     })
 
 }
