@@ -6,7 +6,6 @@ const envConfig = require ('../../_envConfig')
 const path =require ('path')
 
 const faker = require ('faker')
-const { image } = require('faker')
 faker.locale = 'pt_BR'
 
 let tokenAdmin

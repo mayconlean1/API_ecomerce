@@ -10,4 +10,4 @@ console.table(
     }    
 )
 
-console.log( faker.image.image())
+console.log( faker.finance.transactionType())

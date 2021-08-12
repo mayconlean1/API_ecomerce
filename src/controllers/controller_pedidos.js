@@ -148,6 +148,10 @@ module.exports = {
             return res.status(500).send({erro: error , detalhes})
         }
         getUsuario = getUsuario[0]
+
+        if (getUsuario !== 'object'){
+            return res.status(500).send({mensagem: 'Efetue o login'  , detalhes})
+        }
     
         const body = req.body
         const typeProdutos = typeJSON(body.produtos)
