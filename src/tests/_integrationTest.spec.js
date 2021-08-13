@@ -2,7 +2,7 @@ const test = require ('./testRoutes/allTests')
 const singleTest = true
 
 // test.initTables({singleTest})
-test.initTables()
+// test.initTables()
 
 // test.createUsers({singleTest})
 // test.loginUsers({singleTest})
@@ -14,5 +14,7 @@ test.initTables()
 // test.addImageProduct({singleTest})
 // test.deleteImageProduct({singleTest})
 
-test.createrOrder({singleTest})
-test.getOrder({singleTest})
+// test.createrOrder({singleTest})
+// test.getOrder({singleTest})
+test.updateToEntregue({singleTest})
+test.updateToCancelado({singleTest})
