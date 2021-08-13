@@ -16,5 +16,6 @@ const singleTest = true
 
 // test.createrOrder({singleTest})
 // test.getOrder({singleTest})
-test.updateToEntregue({singleTest})
-test.updateToCancelado({singleTest})
+// test.updateFromEntregue({singleTest})
+// test.updateFromCancelado({singleTest})
+test.deleteOrder({singleTest})

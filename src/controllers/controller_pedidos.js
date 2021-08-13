@@ -303,7 +303,7 @@ module.exports = {
                 res.status(500).send({erro:error , detalhes})
             }
         
-            return res.status(201).send({
+            return res.status(200).send({
                 mensagem: 'Pedido excluido',
                 detalhes
             })
