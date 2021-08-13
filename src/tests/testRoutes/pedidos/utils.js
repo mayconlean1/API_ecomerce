@@ -18,6 +18,15 @@ async function createProduct(tokenAdmin='' , estoque = true){
     return { id:reqProduto.body.chave,...dataProduct}
 }
 
+async function createOrder(testUser , products){
+    const dataOrder = createDataOrder(testUser, products)
+    const req = await request (app)
+        .post('/pedidos')
+        .set ('auth',`Bearer ${testUser.token}`)
+        .send(dataOrder)
+    return req
+}
+
 function randomNumber(maxNumber=0){
     return Number( Math.floor( Math.random()* maxNumber) )
 }
@@ -69,5 +78,6 @@ module.exports = {
     createProduct, 
     randomNumber, 
     UTCDateDatabase,
-    createDataOrder
+    createDataOrder,
+    createOrder
 }

@@ -1,3 +1,6 @@
+
+//esse teste não está fechando sozinho após o término
+
 const app = require ('../../../app')
 const request = require ('supertest')
 const Database = require ('../../../Database/init')
@@ -8,6 +11,7 @@ const {createProduct, randomNumber, createDataOrder} = require ('./utils')
 const faker = require ('faker')
 faker.locale = 'pt_BR'
 
+
 const testUser = {
     data:{
         email : faker.internet.email(),
@@ -16,13 +20,14 @@ const testUser = {
 }
 
 const products = []
+let tokenAdmin
 
 module.exports= (data = {singleTest:false})=>{
 
     data = {singleTest:false, ...data}
     const {singleTest} = data
 
-    return describe('Criar pedido',()=>{
+    return describe('Cria um pedido',()=>{
         beforeAll(async()=>{
             if(singleTest){
                 envConfig()
@@ -85,7 +90,6 @@ module.exports= (data = {singleTest:false})=>{
                 .post('/pedidos')
                 .set ('auth',`Bearer ${testUser.token}`)
                 .send(dataOrder)
-            console.log(req.body , req.body.erro)
 
             dataOrder.produtos = {999: 1}
            
@@ -111,7 +115,6 @@ module.exports= (data = {singleTest:false})=>{
                 .post('/pedidos')
                 .set ('auth',`Bearer ${testUser.token}`)
                 .send(dataOrder)
-            console.log(req.body , req.body.erro)
 
             products.pop()
 
@@ -123,7 +126,7 @@ module.exports= (data = {singleTest:false})=>{
         it('Deve criar o pedido com o Token válido', async()=>{   
 
             const dataOrder = createDataOrder(testUser, products)
-           
+
             const req = await request (app)
                 .post('/pedidos')
                 .set ('auth',`Bearer ${testUser.token}`)

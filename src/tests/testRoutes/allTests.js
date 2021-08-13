@@ -1,4 +1,4 @@
-const initTables = require ('../initTables')
+initTables = require ('../initTables')
 const createUsers = require ('./usuarios/createUser')
 const loginUsers = require ('./usuarios/loginUsers')
 const addProduct = require ('./produtos/addProduct')
@@ -8,6 +8,7 @@ const deleteProduct = require ('./produtos/deleteProduct')
 const addImageProduct = require ('./produtos/addImageProduct')
 const deleteImageProduct = require ('./produtos/deleteImageProduct')
 const createrOrder = require ('./pedidos/createrOrder')
+const getOrder = require ('./pedidos/getOrder')
 
 module.exports = {
     initTables,
@@ -19,5 +20,6 @@ module.exports = {
     deleteProduct,
     addImageProduct,
     deleteImageProduct,
-    createrOrder
+    createrOrder,
+    getOrder 
 }
