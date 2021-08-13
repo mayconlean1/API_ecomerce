@@ -130,11 +130,8 @@ module.exports= (data = {singleTest:false})=>{
                 .send(dataOrder)
 
             expect(req.status).toBe(201)
-        })
-        
-        
+        })  
     })
-
 }
 
 
