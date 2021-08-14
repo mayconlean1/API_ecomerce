@@ -15,15 +15,14 @@ module.exports= (data = {singleTest:false})=>{
 
         it('Inicializa as todas tabelas',async()=>{
             await Database.init()
-        })
+        },10000)
 
         it ('Deleta as todas tabelas', async()=>{
             await Database.dropAllTables()
-        })
+        },10000)
 
         it('Reinicia todas as Tabelas', async()=>{
             await Database.init()
-
-        })
+        },10000)
     })
 }

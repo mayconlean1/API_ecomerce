@@ -6,6 +6,8 @@ const adminEmail = process.env.ADMIN_EMAIL || 'test_admin@email.com'
 const adminPass = process.env.ADMIN_PASSWORD || '123456'
 const {createHashPassword} = require ('../utils/utils')
 
+const {isObject} = require ('../utils/utils')
+
 const initDb = {
     async init (){
         const pool = await Database ()
@@ -51,19 +53,24 @@ const initDb = {
             );
         `)
 
-        const [adminUser] = await conn.query(`SELECT * FROM ${db}.usuarios WHERE id = 1`)
+        let [adminUser] = await conn.query(`SELECT * FROM ${db}.usuarios WHERE id = 1`)
         const hashedPass = await createHashPassword(adminPass, 10)
+        adminUser = adminUser[0]
 
-        if(adminUser.length === 0){
+        // if(adminUser.length === 0){
+        if(isObject(adminUser)){
+            await conn.query(`DELETE FROM ${db}.usuarios WHERE email = '${adminEmail}'; `)
 
+            await conn.query(`UPDATE ${db}.usuarios SET email = '${adminEmail}', senha_hash = '${hashedPass}', tipo = 'admin' WHERE id = 1;`)
+            
+        }else{
+            
             await conn.query(`INSERT INTO ${db}.usuarios(
                 email, senha_hash, tipo
             )VALUES(
                 '${adminEmail}', '${hashedPass}' , 'admin'
             );`)
-            
-        }else{
-            await conn.query(`UPDATE ${db}.usuarios SET email = '${adminEmail}', senha_hash = '${hashedPass}', tipo = 'admin' WHERE id = 1;`)
+
         
         }
         await pool.end()
@@ -93,8 +100,6 @@ const initDb = {
     },
 
 }
-
-initDb.init()
 
 module.exports = initDb
 

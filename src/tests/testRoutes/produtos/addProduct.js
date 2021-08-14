@@ -107,7 +107,6 @@ module.exports= (data = {singleTest:false})=>{
                 .set('auth',`Bearer ${testAdmin.token}`)
                 .send(dataProduct)
 
-            console.log(req.body)
             expect(req.status).toBe(500)
         })
     })

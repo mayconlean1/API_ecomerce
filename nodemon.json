@@ -8,7 +8,7 @@
         "MYSQL_HOST": "localhost",
         "MYSQL_PORT": 3306,
         
-        "ADMIN_EMAIL": "admin@email.com",
+        "ADMIN_EMAIL": "admin_dev@email.com",
         "ADMIN_PASSWORD": "123456",
         
         "BASE_URL": "http://localhost:3000"

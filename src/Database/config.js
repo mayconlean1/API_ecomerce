@@ -2,9 +2,9 @@ const mysql = require ('mysql2/promise')
 
 async function start (){
     return await mysql.createPool({ // db
-        "user": process.env.MYSQL_USER || "test", // "dbuser"
+        "user": process.env.MYSQL_USER || "dbuser", // "dbuser" , "test"
         "password": process.env.MYSQL_PASSWORD || "123456",
-        "database": process.env.MYSQL_DATABASE || "db_tests", // "db"
+        "database": process.env.MYSQL_DATABASE || "db", // "db", "db_tests"
         "host": process.env.MYSQL_HOST || "localhost",
         "port": process.env.MYSQL_PORT || 3306
     })

@@ -4,7 +4,7 @@ const singleTest = true
 // test.initTables({singleTest})
 // test.initTables()
 
-// test.createUsers({singleTest})
+test.createUsers({singleTest})
 // test.loginUsers({singleTest})
 
 // test.addProduct({singleTest})
@@ -18,4 +18,4 @@ const singleTest = true
 // test.getOrder({singleTest})
 // test.updateFromEntregue({singleTest})
 // test.updateFromCancelado({singleTest})
-test.deleteOrder({singleTest})
+// test.deleteOrder({singleTest})
