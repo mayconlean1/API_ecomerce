@@ -80,6 +80,14 @@ const utils = {
                 .send(dataProduct)
             return req   
         } catch (error) {throw Error(error)}
+    },
+
+    async getProducts(idProduct = ''){
+        try{
+            const req = await request (app)
+                .get(`/produtos${idProduct}`)
+            return req
+        }catch (error) {throw Error(error)}
     }
 }
 
