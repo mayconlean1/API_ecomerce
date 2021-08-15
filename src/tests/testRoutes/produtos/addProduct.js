@@ -43,7 +43,6 @@ module.exports= (data = {singleTest:false})=>{
         },35000)
 
         it('Não deve ser possivel adicionar um produto como usuario',async ()=>{
-            console.log(testUser, testAdmin)
             const dataProduct = createNewProduct()
             const req = await postProduct(dataProduct, testUser.token)
             expect(req.status).toBe(401)

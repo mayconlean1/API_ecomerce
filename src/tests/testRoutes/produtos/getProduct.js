@@ -7,6 +7,13 @@ const {indexRandomArray} = require ('../../../utils/utils')
 const faker = require ('faker')
 faker.locale = 'pt_BR'
 
+const 
+    {createNewUser, 
+    login,
+    createNewProduct,
+    postProduct
+} = require ('../../utils/utilsTest')
+
 let tokenAdmin
 const idProducts = []
 
@@ -21,7 +28,11 @@ module.exports= (data = {singleTest:false})=>{
 
             if(singleTest){
                 envConfig()
-                Database.init()
+                try { 
+                    await Database.drop({table: 'usuarios'}) 
+                    await Database.drop({table: 'produtos'}) 
+                } catch  {}
+                await Database.init()
             }
 
             const reqAdminLogin = await request (app)
