@@ -30,16 +30,20 @@ module.exports= (data = {singleTest:false})=>{
                 } catch  {}
                 await Database.init()
             }
-            
-            testUser.data = await createNewUser()
-            testUser.token = await login(testUser.data)
+
+            const [, user] = await createNewUser()
+            testUser.data = user
+            const reqUser = await login(testUser.data)
+            testUser.token = reqUser.body.token
+
             const [, userAdmin] = await createNewUser('admin')
             testAdmin.data = userAdmin
-            const req =  await login(userAdmin)
-            testAdmin.token = req.body.token
+            const reqAdmin =  await login(userAdmin)
+            testAdmin.token = reqAdmin.body.token
         },35000)
 
         it('Não deve ser possivel adicionar um produto como usuario',async ()=>{
+            console.log(testUser, testAdmin)
             const dataProduct = createNewProduct()
             const req = await postProduct(dataProduct, testUser.token)
             expect(req.status).toBe(401)
