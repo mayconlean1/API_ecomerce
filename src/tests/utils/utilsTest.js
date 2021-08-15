@@ -61,6 +61,26 @@ const utils = {
             return req
         } catch (error) {throw Error(error)}
     },
+
+    createNewProduct(){
+        const dataProduct = {
+            nome: faker.commerce.productName(),
+            preco: (Number( faker.commerce.price()) + Math.random()).toFixed(2),
+            estoque : Math.trunc( faker.finance.amount() ),
+            descricao : faker.commerce.productDescription()
+        }  
+        return dataProduct  
+    },
+
+    async postProduct(dataProduct={},token=''){
+        try {
+            const req = await request (app)
+                .post('/produtos')
+                .set('auth',`Bearer ${token}`)
+                .send(dataProduct)
+            return req   
+        } catch (error) {throw Error(error)}
+    }
 }
 
 module.exports = utils

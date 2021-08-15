@@ -5,9 +5,9 @@ const singleTest = true
 // test.initTables()
 
 // test.createUsers({singleTest})
-test.loginUsers({singleTest})
+// test.loginUsers({singleTest})
 
-// test.addProduct({singleTest})
+test.addProduct({singleTest})
 // test.getProduct({singleTest})
 // test.updateProduct({singleTest})
 // test.deleteProduct({singleTest})
