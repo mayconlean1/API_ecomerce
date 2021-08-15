@@ -3,7 +3,7 @@ const request = require ('supertest')
 const Database = require ('../../../Database/init')
 const envConfig = require ('../../_envConfig')
 
-const {createNewUser, login} = require ('../../utils/utilsTest')
+const {createNewUser} = require ('../../utils/utilsTest')
 
 module.exports= (data = {singleTest:false})=>{
     data = {singleTest:false, ...data}
