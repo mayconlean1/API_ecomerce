@@ -44,7 +44,6 @@ const utils = {
         if (!error){
             return [req, data]
         }
-
     },
 
     async login(user={}){
@@ -80,6 +79,22 @@ const utils = {
                 .send(dataProduct)
             return req   
         } catch (error) {throw Error(error)}
+    },
+
+    async createPostProduct(token=''){
+        const newProduct = utils.createNewProduct()
+        try{
+            const req = await utils.postProduct(newProduct , token)
+            return [req , newProduct]     
+        }catch (error) {throw Error(error)}
+    },
+
+    async updateProduct(dataProduct={} ,token=''){
+        const req = await request (app)
+            .patch('/produtos')
+            .set('auth',`Bearer ${token}`)
+            .send(dataProduct)
+        return req
     },
 
     async getProducts(idProduct = ''){
