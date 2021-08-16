@@ -90,11 +90,25 @@ const utils = {
     },
 
     async updateProduct(dataProduct={} ,token=''){
-        const req = await request (app)
-            .patch('/produtos')
-            .set('auth',`Bearer ${token}`)
-            .send(dataProduct)
-        return req
+        try{
+            
+            const req = await request (app)
+                .patch('/produtos')
+                .set('auth',`Bearer ${token}`)
+                .send(dataProduct)
+            return req
+        }catch (error) {throw Error(error)}
+    },
+
+    async deleteProduct(token='',id= ''){
+        try {
+                
+            const req = await request (app)
+                .del('/produtos')
+                .set('auth',`Bearer ${token}`)
+                .send({id:id===''?undefined:id})
+            return req
+        } catch (error) {throw Error(error)}
     },
 
     async getProducts(idProduct = ''){

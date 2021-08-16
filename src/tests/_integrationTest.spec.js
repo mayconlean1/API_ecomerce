@@ -9,8 +9,8 @@ const singleTest = true
 
 // test.addProduct({singleTest})
 // test.getProduct({singleTest})
-test.updateProduct({singleTest})
-// test.deleteProduct({singleTest})
+// test.updateProduct({singleTest})
+test.deleteProduct({singleTest})
 // test.addImageProduct({singleTest})
 // test.deleteImageProduct({singleTest})
 
