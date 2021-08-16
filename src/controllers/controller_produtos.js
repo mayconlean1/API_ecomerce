@@ -334,7 +334,7 @@ const controllerProdutos = {
             if(id){
                 let getProduct
                 try {
-                    getProduct = await db.get( {table: 'produtos' ,where: {id}})
+                    getProduct = await db.get( {table: 'produtos' ,whereOR : {id}})
                     
                 } catch (error) {
                     return res.status(500).send({erro: error})
@@ -345,7 +345,7 @@ const controllerProdutos = {
                 }
 
                 try {
-                    await db.delete( {table: 'produtos' , where : {id}} )
+                    await db.delete( {table: 'produtos' , whereOR : {id}} )
                     
                 } catch (error) {
                     return res.status(500).send({
@@ -353,20 +353,21 @@ const controllerProdutos = {
                         detalhes
                     })
                 }
-                const productImgs= getProduct[0].imagens
-                if(productImgs){
-                    try { 
-                        productImgs.forEach(img =>{
-                            // console.log(path.join(basePath, './imagens/' + img))
-                            const imgPath = path.join(basePath, './imagens/' + img)
-                            fs.unlinkSync( imgPath)
-                        })
-                    } catch (error) {
-                        return res.status(500).send({erro: error,APIimage:'error',detalhes})
+                for (product of getProduct){
+                    const productImgs= product.imagens
+                    if(productImgs){
+                        try { 
+                            productImgs.forEach(img =>{
+                                // console.log(path.join(basePath, './imagens/' + img))
+                                const imgPath = path.join(basePath, './imagens/' + img)
+                                fs.unlinkSync( imgPath)
+                            })
+                        } catch (error) {
+                            return res.status(500).send({erro: error,APIimage:'error',detalhes})
+                        }
                     }
+                    // return await controllerProdutos.deleteImages(req , res , next)
                 }
-                // return await controllerProdutos.deleteImages(req , res , next)
-
                 return res.status(200).send({
                     mensagem: 'Produto deletado',
                     detalhes 

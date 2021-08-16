@@ -64,7 +64,16 @@ module.exports= (data = {singleTest:false})=>{
             const req = await deleteProduct(tokenAdmin, idProduto)
             expect(req.status).toBe(200)
         })
-        
+
+        it('Deve deletar um array de produtos logado como admin', async()=>{
+            const arrayProducts = []
+            for(let c = 0 ; c < 3; c++){
+                const [reqProduto]= await createPostProduct(tokenAdmin)
+                arrayProducts.push( reqProduto.body.chave )
+            }
+            const req = await deleteProduct(tokenAdmin, arrayProducts)
+            expect(req.status).toBe(200)
+        }) 
     })
 
 }
