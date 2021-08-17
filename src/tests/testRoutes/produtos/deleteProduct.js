@@ -23,8 +23,8 @@ module.exports= (data = {singleTest:false})=>{
     return describe('Deleta um produto do banco de dados',()=>{
         beforeAll(async()=>{
             if(singleTest){
+                envConfig()
                 try { 
-                    envConfig()
                     await Database.drop({table: 'usuarios'}) 
                     await Database.drop({table: 'produtos'}) 
                 } catch  {}

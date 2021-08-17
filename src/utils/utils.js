@@ -136,6 +136,10 @@ function indexRandomArray(array=[]){
     return false
 }
 
+function evalute(awaitString){
+    return new Promise((resolve , reject)=> resolve(eval(awaitString)))
+}
+
 basePath = __dirname.replace(/src.*/, '')
 
 module.exports = {
@@ -149,5 +153,6 @@ module.exports = {
     UTCDateDatabase,
     createHashPassword,
     comparePassword,
-    indexRandomArray
+    indexRandomArray,
+    evalute
 }

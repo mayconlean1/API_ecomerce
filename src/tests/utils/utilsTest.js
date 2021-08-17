@@ -111,13 +111,34 @@ const utils = {
         } catch (error) {throw Error(error)}
     },
 
+    async addImageProduct(productKey='any_key',token='',path = '', path2=''){
+        try {
+            let req
+            if (path2 === ''){
+                req =  await request (app)
+                    .post(`/produtos/${productKey}`)
+                    .set('auth',`Bearer ${token}`)
+                    .attach('produto_imagem',path)
+            }else{
+                req =  await request (app)
+                    .post(`/produtos/${productKey}`)
+                    .set('auth',`Bearer ${token}`)
+                    .attach('produto_imagem',path)
+                    .attach('produto_imagem',path2)
+            }
+            return req
+            
+        } catch (error) {throw Error(error)}
+    },
+
     async getProducts(idProduct = ''){
         try{
             const req = await request (app)
                 .get(`/produtos${idProduct}`)
             return req
         }catch (error) {throw Error(error)}
-    }
+    },
+
 }
 
 module.exports = utils
