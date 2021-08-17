@@ -1,11 +1,14 @@
 const Database = require ('../../../Database/init')
 const envConfig = require ('../../_envConfig')
+const path = require ('path')
+const fs = require('fs')
 
 const {
     createNewUser,
     login,
     createPostProduct,
-    deleteProduct
+    deleteProduct,
+    addImageProduct
 } = require ('../../utils/utilsTest')
 
 
@@ -73,7 +76,32 @@ module.exports= (data = {singleTest:false})=>{
             }
             const req = await deleteProduct(tokenAdmin, arrayProducts)
             expect(req.status).toBe(200)
-        }) 
+        })
+        
+        it('Deve deletar o produto junto com as imagens', async()=>{
+            const [reqProduto]= await createPostProduct(tokenAdmin)
+            const idProduto = reqProduto.body.chave
+            const pathImage1 = path.join(__dirname,'./images/garrafas.jpg')
+            const pathImage2 = path.join(__dirname,'./images/Garrafa_Termica.jpg')
+            
+            const reqAddImages = await addImageProduct(idProduto, tokenAdmin, pathImage1, pathImage2)
+
+            await deleteProduct(tokenAdmin, idProduto)
+
+            // Corrgir paths
+            const imagesAdd = reqAddImages.body.detalhes.url.map(image => image.replace(/.*\/imagens\//, ''))
+            const imagens_path = __dirname.replace(/src.*/, 'imagens')
+            //
+            
+            const images_dir = fs.readdirSync(imagens_path)
+            
+            const filterImages = imagesAdd.filter(image=>images_dir.includes(image))
+            const deletedImages = filterImages.length === 0
+
+            expect(deletedImages).toBe(true)
+
+        })
+        
     })
 
 }

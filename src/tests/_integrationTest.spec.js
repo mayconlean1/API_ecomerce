@@ -10,8 +10,8 @@ const singleTest = true
 // test.addProduct({singleTest})
 // test.getProduct({singleTest})
 // test.updateProduct({singleTest})
-// test.deleteProduct({singleTest}) 
-test.addImageProduct({singleTest})
+test.deleteProduct({singleTest}) // criar teste delete com imagens 
+// test.addImageProduct({singleTest})
 // test.deleteImageProduct({singleTest})
 
 // test.createrOrder({singleTest})
