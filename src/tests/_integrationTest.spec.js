@@ -11,8 +11,8 @@ const singleTest = true
 // test.getProduct({singleTest})
 // test.updateProduct({singleTest})
 // test.deleteProduct({singleTest}) 
-test.addImageProduct({singleTest})
-// test.deleteImageProduct({singleTest})
+// test.addImageProduct({singleTest})
+test.deleteImageProduct({singleTest})
 
 // test.createrOrder({singleTest})
 // test.getOrder({singleTest})
