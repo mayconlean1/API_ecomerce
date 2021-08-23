@@ -1,22 +1,26 @@
-const app = require ('../../../app')
-const request = require ('supertest')
 const Database = require ('../../../Database/init')
 const envConfig = require ('../../_envConfig')
+const fs =require ('fs')
 
 const path =require ('path')
 
 const faker = require ('faker')
 faker.locale = 'pt_BR'
 
+const {
+    createNewUser,
+    login,
+    createProductWithImages,
+    deleteImageProduct
+} = require ('../../utils/utilsTest')
+
 let tokenAdmin
-const testUser = {
-    data:{
-        email : faker.internet.email(),
-        senha : faker.internet.password()
-    },
-}
+const testUser = {data:{}}
 
 const indexProducts = []
+
+const pathImage1 = path.join(__dirname,'./images/garrafas.jpg')
+const pathImage2 = path.join(__dirname,'./images/Garrafa_Termica.jpg')
 
 module.exports= (data = {singleTest:false})=>{
 
@@ -26,119 +30,85 @@ module.exports= (data = {singleTest:false})=>{
     return describe('Deleta imagens de um produto do banco de dados',()=>{
         beforeAll(async()=>{
             if(singleTest){
-                envConfig()
-                Database.init()
+                try { 
+                    envConfig()
+                    await Database.drop({table: 'usuarios'}) 
+                    await Database.drop({table: 'produtos'}) 
+                } catch  {}
+                await Database.init()
             }
-            //criar usuario
-            await request (app)
-                .post('/usuarios/cadastro')
-                .send(testUser.data)
-
-            const reqUser = await request (app)
-                .post('/usuarios/login')
-                .send(testUser.data)
+           
+            const [,newUser] = await createNewUser()
+            testUser.data = {...newUser}
+            const reqUser = await login(newUser)
             testUser.token = reqUser.body.token
-            // 
-            //logar admin
-            const reqAdminLogin = await request (app)
-                .post('/usuarios/login')
-                .send({
-                    email : process.env.ADMIN_EMAIL,
-                    senha : process.env.ADMIN_PASSWORD
-                })
+            
+            const reqAdminLogin = await login({
+                email : process.env.ADMIN_EMAIL,
+                senha : process.env.ADMIN_PASSWORD
+            })
             tokenAdmin = reqAdminLogin.body.token
 
             //criar produto
             for(let cont=0;cont<2;cont++){
-                indexProducts.push( await createProductWithImages(tokenAdmin) )
+                indexProducts.push( await createProductWithImages(tokenAdmin, pathImage1, pathImage2) )
             }
-        })
+        },40000)
 
         it('Não deve deletar imagem do produto com token de usuario', async()=>{
-            const req = await request (app)
-                .post(`/produtos/excluir_imagens/${String(indexProducts[0])}`)
-                .set('auth',`Bearer ${testUser.token}`)
-                .send({imagens:0})
-                
-            expect(req.status).toBe(404)
+             
+            const req = await deleteImageProduct({params:String(indexProducts[0])}, 0 , testUser.token)
+            expect(req.status).toBe(401)
         })
 
         it('Não deve deletar imagem com o parametro id errado', async()=>{
-            const req = await request (app)
-                .del(`/produtos/excluir_imagens/any_key`)
-                .set('auth',`Bearer ${tokenAdmin}`)
-                .send({imagens:0})
-                
+            
+            const req = await deleteImageProduct({params:'any_key'}, 0 , tokenAdmin)
             expect(req.status).toBe(404)        
         })
 
         it('Não deve deletar imagem com o body id errado', async()=>{
-            const req = await request (app)
-                .del(`/produtos/excluir_imagens`)
-                .set('auth',`Bearer ${tokenAdmin}`)
-                .send({id:'errado', imagens:0})
-  
+           
+            const req = await deleteImageProduct({bodyId:'WRONG'}, 0 , tokenAdmin)
             expect(req.status).toBe(404)        
         })
 
         it('Deve deletar imagem com o parametro id correto', async()=>{
          
-            const req = await request (app)
-                .del(`/produtos/excluir_imagens/${String(indexProducts[0])}`)
-                .set('auth',`Bearer ${tokenAdmin}`)
-                .send({ imagens:0})
+            const req = await deleteImageProduct({params: String(indexProducts[0])}, 0 , tokenAdmin)
             expect(req.status).toBe(200)        
         })
 
         it('Deve deletar imagem com o body id correto', async()=>{
          
-            const req = await request (app)
-                .del(`/produtos/excluir_imagens/`)
-                .set('auth',`Bearer ${tokenAdmin}`)
-                .send({id:String(indexProducts[0]), imagens:0})
+            const req = await deleteImageProduct({bodyId: String(indexProducts[0])}, 0 , tokenAdmin)
             expect(req.status).toBe(200)        
         })
 
         it('Deve deletar os indices das imagens enviados como um array, utilizando id produto', async()=>{
          
-            const req = await request (app)
-                .del(`/produtos/excluir_imagens/${String(indexProducts[1])}`)
-                .set('auth',`Bearer ${tokenAdmin}`)
-                .send({ imagens:[0,1]})
+            const req = await deleteImageProduct({params: String(indexProducts[0])}, [0,1] , tokenAdmin)
             expect(req.status).toBe(200)        
         })
-        // afterAll(async()=>{
-        //     for (let i of indexProducts){
-        //         await request (app)
-        //             .del(`/produtos/excluir_imagens/${String(i)}`)
-        //             .set('auth',`Bearer ${tokenAdmin}`)
-        //             .send({imagens:[0,1]})
-        //     }
-        // })
+
+        afterAll(async()=>{
+           
+            const BASE_PATH = __dirname.replace(/\\src\\tests\\testRoutes\\produtos/,'')
+            const imagesPath = path.join(BASE_PATH,'./imagens')
+            const imagesDir = fs.readdirSync(imagesPath)
+
+            try {
+                imagesDir.forEach((file,index)=>{
+                    if (index !== 0){
+                        
+                        const imagePath = path.join(BASE_PATH,`./imagens/${file}`)
+                        fs.unlinkSync(imagePath)
+                    }
+                })
+                
+            } catch (error) {
+                console.error('Test Images do not delete', error)
+            }
+        })
     })
-}
-
-async function createProductWithImages(tokenAdmin=''){
-    const dataProduct = {
-        nome: faker.commerce.productName(),
-        preco: faker.commerce.price(),
-        estoque : Math.trunc( faker.finance.amount() ),
-        descricao : faker.commerce.productDescription()
-    }
-
-    const reqProduto = await request (app)
-        .post('/produtos')
-        .set('auth',`Bearer ${tokenAdmin}`)
-        .send(dataProduct)
-
-    const pathImage1 = path.join(__dirname,'./images/garrafas.jpg')
-    const pathImage2 = path.join(__dirname,'./images/Garrafa_Termica.jpg')
-
-    await request (app)
-        .post(`/produtos/${String( reqProduto.body.chave)}`)
-        .set('auth',`Bearer ${tokenAdmin}`)
-        .attach('produto_imagem',pathImage1)
-        .attach('produto_imagem',pathImage2)
-
-    return reqProduto.body.chave
 }

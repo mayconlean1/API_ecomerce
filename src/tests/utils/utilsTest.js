@@ -111,6 +111,16 @@ const utils = {
         } catch (error) {throw Error(error)}
     },
 
+    async deleteImageProduct(indexProduct={params:'',bodyId:''},indexImage='' , token){
+        indexProduct = {bodyId:'',params:'', ...indexProduct}
+        const sendJson = indexProduct.bodyId !== ''? {id:indexProduct.bodyId, imagens:indexImage} : {imagens:indexImage}
+        const req = await request (app)
+            .del(`/produtos/excluir_imagens/${indexProduct.params}`)
+            .set('auth',`Bearer ${token}`)
+            .send(sendJson)
+        return req
+    },
+
     async addImageProduct(productKey='any_key',token='',path = '', path2=''){
         try {
             let req
@@ -129,6 +139,14 @@ const utils = {
             return req
             
         } catch (error) {throw Error(error)}
+    },
+
+    async createProductWithImages(tokenAdmin='', path='' , path2=''){
+        const [reqProduto] = await utils.createPostProduct(tokenAdmin)
+    
+        await utils.addImageProduct(reqProduto.body.chave,tokenAdmin,path,path2)
+    
+        return reqProduto.body.chave 
     },
 
     async getProducts(idProduct = ''){
